@@ -36,6 +36,7 @@ class HomePage extends StatelessWidget {
           // TODO: Center items on the card (103)
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+
             PhotoHero(
               photo: "images/" + product.assetName,
               height: 100.0,

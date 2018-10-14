@@ -1,8 +1,6 @@
+import 'package:mid_term/localization/application.dart';
+import 'package:mid_term/localization/app_translations.dart';
 import 'package:flutter/material.dart';
-
-
-import 'dart:ui';
-
 
 class LanguageSelectorPage extends StatefulWidget {
   @override
@@ -10,15 +8,23 @@ class LanguageSelectorPage extends StatefulWidget {
 }
 
 class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
-  final List<String> languagesList = ["English", "Korean"];
-  final List<String> languagesTitle = ["Select language", "언어 선택"];
-  String select_lang = "Select language";
+  //languagesList also moved to the Application class just like the languageCodesList
+  static final List<String> languagesList = application.supportedLanguages;
+  static final List<String> languageCodesList =
+      application.supportedLanguagesCodes;
+
+  final Map<dynamic, dynamic> languagesMap = {
+    languagesList[0]: languageCodesList[0],
+    languagesList[1]: languageCodesList[1],
+  };
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(select_lang),
+        title: Text(
+          AppTranslations.of(context).text("title_select_language"),
+        ),
       ),
       body: _buildLanguagesList(),
     );
@@ -27,19 +33,17 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
   _buildLanguagesList() {
     return ListView.builder(
       itemCount: languagesList.length,
-      itemBuilder: (context, index){
-        return _buildLanguageItem(languagesList[index], index);
+      itemBuilder: (context, index) {
+        return _buildLanguageItem(languagesList[index]);
       },
     );
   }
 
-  _buildLanguageItem(String language, int index){
+  _buildLanguageItem(String language) {
     return InkWell(
       onTap: () {
-        setState(() {
-          select_lang = languagesTitle[index];
-
-        });
+        print(language);
+        application.onLocaleChanged(Locale(languagesMap[language]));
       },
       child: Center(
         child: Padding(

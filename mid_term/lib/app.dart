@@ -4,11 +4,11 @@ import 'package:mid_term/model/hotel.dart';
 import 'package:mid_term/model/hotels_repository.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mid_term/localization/app_translations_delegate.dart';
+import 'package:mid_term/localization/app_translations.dart';
+import 'package:mid_term/localization/application.dart';
 
 
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatefulWidget {
   @override
@@ -16,8 +16,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AppTranslationsDelegate _newLocaleDelegate;
 
   List<Hotel> products = HotelsRepository.loadProducts(Kind.all);
+
+  @override
+  void initState() {
+    super.initState();
+    _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
+    application.onLocaleChanged = onLocaleChange;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +33,24 @@ class _MyAppState extends State<MyApp> {
       title: "midterm",
       home: HomePage(theme: _hotelTheme, title: "yolo", products: products),
       localizationsDelegates: [
+        _newLocaleDelegate,
+        const AppTranslationsDelegate(),
         //provides localised strings
         GlobalMaterialLocalizations.delegate,
         //provides RTL support
         GlobalWidgetsLocalizations.delegate,
       ],
+      supportedLocales: application.supportedLocales(),
     );
   }
+
+  void onLocaleChange(Locale locale) {
+    setState(() {
+      _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
+    });
+  }
 }
+
 
 final ThemeData _hotelTheme = _buildHotelTheme();
 
